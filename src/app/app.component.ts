@@ -1,13 +1,25 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
+
+export interface CatFact {
+  fact: string;
+}
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss'],
+  imports: [HttpClientModule, CommonModule],
 })
 export class AppComponent {
-  title = 'mentoring-program-starter-kit';
+  private httpClient = inject(HttpClient);
+
+  catFact$: Observable<CatFact> = this.loadFact();
+
+  loadFact(): Observable<CatFact> {
+    return this.httpClient.get<CatFact>('https://catfact.ninja/fact');
+  }
 }
